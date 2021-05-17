@@ -20,6 +20,9 @@ class AlbumViewModel : ViewModel() {
     private val _albums = MutableLiveData<PagingData<Album>>()
     val albums: LiveData<PagingData<Album>> = _albums
 
+    private var _error = MutableLiveData<String>()
+    val error: LiveData<String> = _error
+
     fun getAlbums(){
         viewModelScope.launch {
             try {
@@ -27,7 +30,7 @@ class AlbumViewModel : ViewModel() {
                     _albums.value = it
                 }
             } catch (e: Exception){
-                Log.d("Exceptions", e.message.toString())
+                _error.value = e.message
             }
         }
     }

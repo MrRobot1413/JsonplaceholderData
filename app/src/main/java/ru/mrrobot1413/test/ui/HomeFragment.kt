@@ -12,6 +12,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import ru.mrrobot1413.test.databinding.FragmentHomeBinding
@@ -44,6 +45,10 @@ class HomeFragment : Fragment() {
             adapter.submitData(viewLifecycleOwner.lifecycle, it)
         })
 
+        albumViewModel.error.observe(viewLifecycleOwner, {
+            showSnackbar(it)
+        })
+
         lifecycleScope.launch {
             adapter.loadStateFlow.collectLatest { loadStates ->
                 binding.apply {
@@ -62,5 +67,12 @@ class HomeFragment : Fragment() {
             (binding.recyclerView.layoutManager as LinearLayoutManager).orientation
         )
         binding.recyclerView.addItemDecoration(dividerItemDecoration)
+    }
+
+    private fun showSnackbar(text: String) {
+        view?.let {
+            Snackbar.make(it, text, Snackbar.LENGTH_INDEFINITE)
+                .show()
+        }
     }
 }
