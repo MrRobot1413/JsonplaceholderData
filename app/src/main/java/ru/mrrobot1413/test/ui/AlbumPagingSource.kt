@@ -3,34 +3,66 @@ package ru.mrrobot1413.test.ui
 import android.util.Log
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import retrofit2.HttpException
 import ru.mrrobot1413.test.network.Api
 import ru.mrrobot1413.test.network.models.Album
-import java.io.IOException
+import ru.mrrobot1413.test.storage.models.AlbumDb
+import ru.mrrobot1413.test.storage.repositories.AlbumDbRepository
+import java.lang.Exception
 
 class AlbumPagingSource(
-    private val api: Api
-) : PagingSource<Int, Album>
-    () {
+    private val api: Api,
+    dbRepository: AlbumDbRepository
+) : PagingSource<Int, Album>() {
+
+    private val albumDbRepository = dbRepository
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Album> {
-        val position = params.key ?: 10
+        val position = params.key ?: 1
 
         return try {
-            val response =
+            val dataList =
                 api.getAlbums().await()
 
+            val sortedList = dataList.sortedBy {
+                it.title
+            }
+
+            val listToDb = ArrayList<AlbumDb>()
+
+            sortedList.forEach {
+                listToDb.add(
+                    AlbumDb(
+                        it.userId,
+                        it.id,
+                        it.title
+                    )
+                )
+            }
+            albumDbRepository.insert(listToDb)
+
             LoadResult.Page(
-                data = response,
+                data = sortedList,
                 prevKey = null,
-                nextKey = if (response.isEmpty()) null else position + 1
+                nextKey = if (position == 1) null else position + 1
             )
-        } catch (e: IOException) {
-            Log.d("Exceptions", "IOException: ${e.message}")
-            LoadResult.Error(e)
-        } catch (e: HttpException) {
-            Log.d("Exceptions", "HttpException: ${e.message}")
-            LoadResult.Error(e)
+        } catch (e: Exception) {
+            Log.d("Exceptions", "Exception: ${e.message}")
+            val listFromDb = albumDbRepository.selectAll()
+            val resultList: ArrayList<Album> = ArrayList()
+            listFromDb.forEach {
+                resultList.add(
+                    Album(
+                        it.userId,
+                        it.id,
+                        it.title
+                    )
+                )
+            }
+            LoadResult.Page(
+                data = resultList,
+                prevKey = null,
+                nextKey = if (position == 1) null else position + 1
+            )
         }
     }
 

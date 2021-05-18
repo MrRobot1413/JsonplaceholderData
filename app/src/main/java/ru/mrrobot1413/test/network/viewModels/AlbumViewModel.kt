@@ -7,11 +7,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.onEmpty
 import kotlinx.coroutines.launch
 import ru.mrrobot1413.test.network.models.Album
 import ru.mrrobot1413.test.network.repositories.AlbumRepository
-import java.lang.Exception
+import kotlin.Exception
 
 class AlbumViewModel : ViewModel() {
 
@@ -20,9 +22,6 @@ class AlbumViewModel : ViewModel() {
     private val _albums = MutableLiveData<PagingData<Album>>()
     val albums: LiveData<PagingData<Album>> = _albums
 
-    private var _error = MutableLiveData<String>()
-    val error: LiveData<String> = _error
-
     fun getAlbums(){
         viewModelScope.launch {
             try {
@@ -30,7 +29,7 @@ class AlbumViewModel : ViewModel() {
                     _albums.value = it
                 }
             } catch (e: Exception){
-                _error.value = e.message
+                Log.d("Exceptions", e.message.toString())
             }
         }
     }
