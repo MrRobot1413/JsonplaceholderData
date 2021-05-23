@@ -1,4 +1,4 @@
-package ru.mrrobot1413.test.ui
+package ru.mrrobot1413.test.ui.paging
 
 import android.annotation.SuppressLint
 import android.view.View

@@ -1,10 +1,9 @@
-package ru.mrrobot1413.test.ui
+package ru.mrrobot1413.test.ui.paging
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.RecyclerView
 import ru.mrrobot1413.test.R
 import ru.mrrobot1413.test.network.models.Album
 

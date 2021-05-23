@@ -1,16 +1,15 @@
 package ru.mrrobot1413.test.ui
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.paging.LoadState
+import androidx.paging.map
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
@@ -19,6 +18,7 @@ import kotlinx.coroutines.launch
 import ru.mrrobot1413.test.R
 import ru.mrrobot1413.test.databinding.FragmentHomeBinding
 import ru.mrrobot1413.test.network.viewModels.AlbumViewModel
+import ru.mrrobot1413.test.ui.paging.AlbumAdapter
 
 
 class HomeFragment : Fragment() {
